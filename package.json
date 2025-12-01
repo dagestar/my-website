@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "^16.0.5",
     "better-sqlite3": "^12.5.0",
     "date-fns": "^4.1.0",
     "marked": "^17.0.1",
