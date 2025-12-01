@@ -13,8 +13,9 @@ export function getSessionToken() {
   return ADMIN_SESSION_TOKEN;
 }
 
-export function isAuthenticatedFromCookies() {
-  const cookie = cookies().get(ADMIN_COOKIE_NAME);
+export async function isAuthenticatedFromCookies() {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get(ADMIN_COOKIE_NAME);
   return cookie?.value === ADMIN_SESSION_TOKEN;
 }
 

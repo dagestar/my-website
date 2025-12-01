@@ -148,11 +148,6 @@ const siteContentZh = {
     disclaimer:
       "所有 1688 订单都会共享价格截图或链接，明确货款与服务费金额，确保费用透明可追溯。",
   },
-  casesHeading: {
-    eyebrow: "案例",
-    title: "真实项目案例，细节透明可复盘。",
-    subtitle: "通过具体案例让新客户快速建立信任。",
-  },
   caseLabels: {
     problem: "客户难题",
     solution: "解决方案",
