@@ -1,0 +1,13 @@
+<svg width="960" height="640" viewBox="0 0 960 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Replace with real office photo">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect width="960" height="640" fill="url(#grad)" rx="32" />
+  <g fill="#ffffff" opacity="0.7" font-family="'Segoe UI', sans-serif" text-anchor="middle">
+    <text x="50%" y="45%" font-size="40" font-weight="600">Office / Sample Wall Placeholder</text>
+    <text x="50%" y="55%" font-size="22">Please replace with a real photo from Yiwu team</text>
+  </g>
+</svg>
