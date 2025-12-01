@@ -14,6 +14,8 @@ import { LanguageProvider } from "@/contexts/language-context";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { getSiteSettings } from "@/lib/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const settings = await getSiteSettings();
 

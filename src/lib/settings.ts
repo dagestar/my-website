@@ -1,7 +1,4 @@
-import { promises as fs } from "fs";
-import path from "path";
-
-const SETTINGS_PATH = path.join(process.cwd(), "data", "site-settings.json");
+import { sql } from "@vercel/postgres";
 
 export type SiteSettings = {
   showCustomerWall: boolean;
@@ -11,29 +8,48 @@ const defaultSettings: SiteSettings = {
   showCustomerWall: true,
 };
 
-async function ensureFile() {
-  try {
-    await fs.access(SETTINGS_PATH);
-  } catch {
-    await fs.mkdir(path.dirname(SETTINGS_PATH), { recursive: true });
-    await fs.writeFile(
-      SETTINGS_PATH,
-      JSON.stringify(defaultSettings, null, 2),
-      "utf-8",
+declare global {
+  // eslint-disable-next-line no-var
+  var __siteSettingsTableEnsured: boolean | undefined;
+}
+
+async function ensureTable() {
+  if (!process.env.POSTGRES_URL) {
+    throw new Error(
+      "Missing POSTGRES_URL environment variable. Set it in .env.local or Vercel project settings.",
     );
   }
+
+  if (globalThis.__siteSettingsTableEnsured) return;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      id INT PRIMARY KEY,
+      show_customer_wall BOOLEAN NOT NULL DEFAULT TRUE
+    )
+  `;
+
+  await sql`
+    INSERT INTO site_settings (id, show_customer_wall)
+    VALUES (1, TRUE)
+    ON CONFLICT (id) DO NOTHING
+  `;
+
+  globalThis.__siteSettingsTableEnsured = true;
+}
+
+function mapRow(row?: { show_customer_wall: boolean }): SiteSettings {
+  if (!row) return { ...defaultSettings };
+  return { showCustomerWall: row.show_customer_wall };
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  await ensureFile();
-  const data = await fs.readFile(SETTINGS_PATH, "utf-8");
+  await ensureTable();
 
-  try {
-    const parsed = JSON.parse(data) as Partial<SiteSettings>;
-    return { ...defaultSettings, ...parsed };
-  } catch {
-    return { ...defaultSettings };
-  }
+  const { rows } =
+    await sql<{ show_customer_wall: boolean }>`SELECT show_customer_wall FROM site_settings WHERE id = 1 LIMIT 1`;
+
+  return mapRow(rows[0]);
 }
 
 export async function updateSiteSettings(
@@ -41,7 +57,13 @@ export async function updateSiteSettings(
 ): Promise<SiteSettings> {
   const current = await getSiteSettings();
   const merged = { ...current, ...next };
-  await fs.writeFile(SETTINGS_PATH, JSON.stringify(merged, null, 2), "utf-8");
+
+  await sql`
+    INSERT INTO site_settings (id, show_customer_wall)
+    VALUES (1, ${merged.showCustomerWall})
+    ON CONFLICT (id) DO UPDATE SET show_customer_wall = EXCLUDED.show_customer_wall
+  `;
+
   return merged;
 }
 

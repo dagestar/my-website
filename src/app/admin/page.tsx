@@ -19,7 +19,8 @@ export default async function AdminPage() {
             Contact form submissions
           </h1>
           <p className="text-sm text-slate-500">
-            Data is stored temporarily in JSON. Connect a database for production.
+            Data is stored in Vercel Postgres so you can review submissions
+            anytime.
           </p>
         </div>
         <AdminDashboard
