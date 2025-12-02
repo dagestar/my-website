@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLanguage } from "@/contexts/language-context";
@@ -26,6 +27,7 @@ type FormState = "idle" | "loading" | "success" | "error";
 export function ContactForm() {
   const [status, setStatus] = useState<FormState>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
   const content = useSiteContent();
   const { language } = useLanguage();
   const formCopy = content.contact.form;
@@ -67,6 +69,7 @@ export function ContactForm() {
       (event.target as HTMLFormElement).reset();
       trackEvent("contact_form_submit", { channel: "web", language });
       regenerateCaptcha();
+      router.push("/thank-you");
     } else {
       const data = await response.json();
       setStatus("error");
